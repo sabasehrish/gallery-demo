@@ -97,7 +97,9 @@ main(int argc, char** argv) try {
     analyze_vertices(ev, vertices_tag, xhist, yhist, zhist, xyhist);
     analyze_vertex_cluster_correlations(
       ev, vertices_tag, vertex_cluster_assns, nclus_vs_adc_sum);
-    analyze_cluster_hit_correlations(
+//    analyze_cluster_hit_correlations(
+//      ev, clusters_tag, cluster_hit_assns, adc_vs_summed_integrals);
+    analyze_cluster_hit_correlations_with_utility(
       ev, clusters_tag, cluster_hit_assns, adc_vs_summed_integrals);
     times.push_back(duration_cast<microseconds>(system_clock::now() - t0));
   }

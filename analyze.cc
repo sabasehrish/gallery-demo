@@ -1,6 +1,7 @@
 #include "analyze.hh"
 
 #include "canvas/Persistency/Common/FindMany.h"
+#include "canvas/Persistency/Common/Assns.h"
 #include "gallery/ValidHandle.h"
 #include "lardataobj/RecoBase/Cluster.h"
 #include "lardataobj/RecoBase/Hit.h"
@@ -8,10 +9,14 @@
 #include "nusimdata/SimulationBase/MCTruth.h"
 
 #include "range/v3/all.hpp"
+#include "range/v3/size.hpp"
 
+#include <cassert>
+#include <cmath>
 #include <utility> // for std::forward
 #include <vector>
 
+#include <iostream>
 using namespace art;
 using namespace recob;
 using namespace std;
@@ -119,7 +124,6 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
 {
   auto const clusters_h = ev.getValidHandle<vector<Cluster>>(clusters_tag);
   FindMany<Hit> hits_for_cluster(clusters_h, ev, assns_tag);
-
   for (size_t i = 0, sz = clusters_h->size(); i != sz; ++i) {
     auto const& cluster = (*clusters_h)[i];
     // We will fill this histogram once for each cluster.
@@ -131,3 +135,49 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
     hist.Fill(adc, summed_integrals);
   }
 }
+
+void
+analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
+                                              InputTag const& clusters_tag,
+                                              InputTag const& assns_tag,
+                                              TH2F& hist)
+{
+  auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
+  
+  auto fill_histo = [&hist](auto const & cl, auto hits) {
+    //auto clusters = rng | ranges::view::keys | ranges::view::unique;
+    //auto hits = rng | ranges::view::values;
+    //float adc = (*ranges::begin(clusters))->SummedADC();
+    float adc = cl.SummedADC();
+    float summed_integrals = ranges::accumulate(hits | view::transform(&recob::Hit::Integral), 0.0f);
+    hist.Fill(adc, summed_integrals);
+  };
+
+  some_magic(assns, fill_histo);
+}
+
+template <class A, class F>
+  void some_magic(A const & assns, F & func) {
+    auto rr = assns |
+                       ranges::view::all |
+                       ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;});
+    ranges::for_each(rr, 
+                     [&func](auto rng) {
+                                         auto rights = rng | ranges::view::values;
+                                         auto lefts = rng | ranges::view::keys | ranges::view::unique; 
+                                         auto const & left = **ranges::begin(lefts); 
+                                         func(left, rights);
+                                       }
+                    ); 
+
+ }
+
+
+template <class A, class F>
+   void for_each_associated_group_pair(A const & assns, F & func) {
+      ranges::for_each(assns |
+                       ranges::view::all |
+                       ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;}),
+                       func);
+     }   
+

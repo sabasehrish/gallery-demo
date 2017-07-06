@@ -39,7 +39,7 @@ fi
 # practice, because it is best to diagnose incompatibilities before they cause
 # compilation failures, linkining failures, or runtime failures.
 #
-setup -B dunetpc v06_34_00 -q +e14:+prof
+#setup -B dunetpc v06_34_00 -q +e14:+prof
 setup -B gallery v1_03_12 -q +e14:+prof:+nu
 setup -B range v3_0_2_4
 # The following setup assumes you want the specified version of the
@@ -49,7 +49,7 @@ setup -B range v3_0_2_4
 # LArSoft-related art/ROOT data files. Setting up larsoftobj also sets
 # up the appropriate version of the gallery product.
 #
-# setup -B larsoftobj v1_19_01 -q +e14:+prof
+setup -B larsoftobj v1_19_01 -q +e14:+prof
 
 # The gallery demo is built using CMake, so you'll need a recent
 # version of CMake.
