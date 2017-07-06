@@ -145,9 +145,6 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
   auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
   
   auto fill_histo = [&hist](auto const & cl, auto hits) {
-    //auto clusters = rng | ranges::view::keys | ranges::view::unique;
-    //auto hits = rng | ranges::view::values;
-    //float adc = (*ranges::begin(clusters))->SummedADC();
     float adc = cl.SummedADC();
     float summed_integrals = ranges::accumulate(hits | view::transform(&recob::Hit::Integral), 0.0f);
     hist.Fill(adc, summed_integrals);
@@ -160,7 +157,7 @@ template <class A, class F>
   void some_magic(A const & assns, F func) {
     for_each_associated_group_pair(assns, [&func](auto rng) {
                                            auto rights = rng | ranges::view::values;
-                                           auto lefts = rng | ranges::view::keys | ranges::view::unique; 
+                                           auto lefts = rng | ranges::view::keys; 
                                            auto const & left = **ranges::begin(lefts); 
                                            func(left, rights);
                                        }
