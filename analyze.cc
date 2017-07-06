@@ -167,10 +167,10 @@ template <class A, class F>
 
 
 template <class A, class F>
-   void for_each_associated_group_pair(A const & assns, F func) {
+   void for_each_associated_group_pair(A const & assns, F && func) {
       ranges::for_each(assns |
                          ranges::view::all |
                          ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;}),
-                       func);
+                       std::forward<F>(func));
      }   
 

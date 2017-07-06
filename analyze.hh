@@ -43,6 +43,6 @@ template <class A, class F>
   void some_magic(A const & assns, F func);
 
 template <class A, class F>
-   void for_each_associated_group_pair(A const & assns, F func);
+   void for_each_associated_group_pair(A const & assns, F && func);
 
 #endif
