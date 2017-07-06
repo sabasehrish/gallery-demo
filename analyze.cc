@@ -157,16 +157,12 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
 }
 
 template <class A, class F>
-  void some_magic(A const & assns, F & func) {
-    auto rr = assns |
-                       ranges::view::all |
-                       ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;});
-    ranges::for_each(rr, 
-                     [&func](auto rng) {
-                                         auto rights = rng | ranges::view::values;
-                                         auto lefts = rng | ranges::view::keys | ranges::view::unique; 
-                                         auto const & left = **ranges::begin(lefts); 
-                                         func(left, rights);
+  void some_magic(A const & assns, F func) {
+    for_each_associated_group_pair(assns, [&func](auto rng) {
+                                           auto rights = rng | ranges::view::values;
+                                           auto lefts = rng | ranges::view::keys | ranges::view::unique; 
+                                           auto const & left = **ranges::begin(lefts); 
+                                           func(left, rights);
                                        }
                     ); 
 
@@ -174,10 +170,10 @@ template <class A, class F>
 
 
 template <class A, class F>
-   void for_each_associated_group_pair(A const & assns, F & func) {
+   void for_each_associated_group_pair(A const & assns, F func) {
       ranges::for_each(assns |
-                       ranges::view::all |
-                       ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;}),
+                         ranges::view::all |
+                         ranges::view::group_by([](auto a1, auto a2) { return a1.first == a2.first;}),
                        func);
      }   
 
