@@ -108,6 +108,27 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
     for (auto phit : hits) {
       summed_integrals += phit->Integral();
     }
+//    std::cout << adc << ", " << summed_integrals << std::endl;
     hist.Fill(adc, summed_integrals);
   }
 }
+/*
+  auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
+
+  float adc = assns[0].first->SummedADC();
+  float summed_integrals = 0.; 
+  size_t sz = assns.size(); 
+  if (sz == 0) return;  
+  for (size_t i = 1; i != sz; ++i) {
+    auto const& cluster = assns[i].first;
+    summed_integrals += assns[i-1].second->Integral();
+    if (assns[i-1].first != cluster){
+   //   std::cout << adc << ", " << summed_integrals << std::endl; 
+      hist.Fill(adc, summed_integrals);
+      adc = cluster->SummedADC();
+      summed_integrals = 0.; 
+    }
+  }
+  hist.Fill(adc, summed_integrals+assns[sz-1].second->Integral());
+ // std::cout << adc << ", " << summed_integrals+assns[sz-1].second->Integral() << std::endl; 
+}*/
