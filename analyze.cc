@@ -120,8 +120,9 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
   size_t sz = assns.size(); 
   if (sz == 0) return;  
   for (size_t i = 1; i != sz; ++i) {
-    auto const& cluster = assns[i].first;
-    summed_integrals += assns[i-1].second->Integral();
+    auto const & cluster = assns[i].first;
+    auto const & hit = assns[i-1].second; 
+    summed_integrals += hit->Integral();
     if (assns[i-1].first != cluster){
    //   std::cout << adc << ", " << summed_integrals << std::endl; 
       hist.Fill(adc, summed_integrals);
