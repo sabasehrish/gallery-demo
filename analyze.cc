@@ -144,18 +144,19 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
 {
   auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
   
-  auto fill_histo = [&hist](auto const & cl, auto hits) {
-    float adc = cl.SummedADC();
-    float summed_integrals = ranges::accumulate(hits | view::transform(&recob::Hit::Integral), 0.0f);
+  auto fill_histo = [&hist](auto const & cluster, auto hits) {
+    float const adc = cluster.SummedADC();
+    float const summed_integrals = ranges::accumulate(hits | view::transform(&recob::Hit::Integral), 0.0f);
     hist.Fill(adc, summed_integrals);
   };
 
-  for_each_associated_group_with_LHS(assns, fill_histo);
+  for_each_group_with_left(assns, fill_histo);
 }
 
 // Utility functions to iterate through association collection 
 // using range v3 library. It allows access to both left and 
 // right hand side in the collection
+// rename to for_each_group and for_each_group_with_left
 
 template <class A, class F>
   void for_each_associated_group_with_LHS(A const & assns, F func) {

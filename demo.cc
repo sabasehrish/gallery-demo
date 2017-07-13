@@ -88,24 +88,18 @@ main(int argc, char** argv) try {
   // reached the end of the stream. Use gallery::Event::next() to go
   // to the next event.
 
-  auto const start_time = system_clock::now();
+  auto const start_time = steady_clock::now();
   vector<microseconds> times; // we'll record the time for each event.
 
   for (gallery::Event ev(filenames); !ev.atEnd(); ev.next()) {
-    auto const t0 = system_clock::now();
-//    analyze_mctruths(ev, mctruths_tag, nparticles_hist);
-//    analyze_vertices(ev, vertices_tag, xhist, yhist, zhist, xyhist);
-//    analyze_vertex_cluster_correlations(
-//      ev, vertices_tag, vertex_cluster_assns, nclus_vs_adc_sum);
-//    analyze_cluster_hit_correlations(
-//      ev, clusters_tag, cluster_hit_assns, adc_vs_summed_integrals);
+    auto const t0 = steady_clock::now();
     analyze_cluster_hit_correlations_with_utility(
       ev, cluster_hit_assns, adc_vs_summed_integrals);
-    times.push_back(duration_cast<microseconds>(system_clock::now() - t0));
+    times.push_back(duration_cast<microseconds>(steady_clock::now() - t0));
   }
 
   auto const elapsed_time =
-    duration_cast<milliseconds>(system_clock::now() - start_time);
+    duration_cast<milliseconds>(steady_clock::now() - start_time);
   auto const sum_times =
     std::accumulate(begin(times), end(times), microseconds(0));
 
