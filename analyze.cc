@@ -118,15 +118,18 @@ analyze_cluster_hit_correlations_nofm(gallery::Event const& ev,
                                       TH2F& hist)
 {
   auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
-
+  //check for the empty collection
   size_t sz = assns.size(); 
-  if (sz == 0) return;  
+  if (sz == 0) return;
+  // initializing using the first element in the association
+  // collection 
   float adc = assns[0].first->SummedADC();
   float summed_integrals = assns[0].second->Integral(); 
+
   for (size_t i = 1; i != sz; ++i) {
     auto const & cluster = assns[i].first;
+    // Check for clusters boundary
     if (assns[i-1].first != cluster){
-//      std::cout << adc << ", " << summed_integrals << std::endl;
       hist.Fill(adc, summed_integrals);
       adc = cluster->SummedADC();
       summed_integrals = 0.; 
@@ -135,7 +138,5 @@ analyze_cluster_hit_correlations_nofm(gallery::Event const& ev,
     summed_integrals += hit->Integral();
   }
   //for the last group of hits 
-  //summed_integrals += assns[sz-1].second->Integral();
   hist.Fill(adc, summed_integrals);
-  //std::cout << adc << ", " << summed_integrals << std::endl;
 }
