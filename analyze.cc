@@ -136,9 +136,9 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
   }
 }
 
+/*usage example of for_each_associated_group_with_LHS*/
 void
 analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
-                                              InputTag const& clusters_tag,
                                               InputTag const& assns_tag,
                                               TH2F& hist)
 {
@@ -150,11 +150,15 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
     hist.Fill(adc, summed_integrals);
   };
 
-  some_magic(assns, fill_histo);
+  for_each_associated_group_with_LHS(assns, fill_histo);
 }
 
+// Utility functions to iterate through association collection 
+// using range v3 library. It allows access to both left and 
+// right hand side in the collection
+
 template <class A, class F>
-  void some_magic(A const & assns, F func) {
+  void for_each_associated_group_with_LHS(A const & assns, F func) {
     for_each_associated_group_pair(assns, [&func](auto rng) {
                                            auto rights = rng | ranges::view::values;
                                            auto lefts = rng | ranges::view::keys; 
@@ -164,7 +168,6 @@ template <class A, class F>
                     ); 
 
  }
-
 
 template <class A, class F>
    void for_each_associated_group_pair(A const & assns, F && func) {
