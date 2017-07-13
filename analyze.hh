@@ -39,7 +39,7 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
                                               art::InputTag const& assns_tag,
                                               TH2F& hist);
 template <class A, class F>
-  void for_each_associated_group_with_LHS(A const & assns, F func);
+  void for_each_group_with_left(A const & assns, F func);
 
 template <class A, class F>
    void for_each_associated_group_pair(A const & assns, F && func);

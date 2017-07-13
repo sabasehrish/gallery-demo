@@ -159,7 +159,7 @@ analyze_cluster_hit_correlations_with_utility(gallery::Event const& ev,
 // rename to for_each_group and for_each_group_with_left
 
 template <class A, class F>
-  void for_each_associated_group_with_LHS(A const & assns, F func) {
+  void for_each_group_with_left(A const & assns, F func) {
     for_each_associated_group_pair(assns, [&func](auto rng) {
                                            auto rights = rng | ranges::view::values;
                                            auto lefts = rng | ranges::view::keys; 
