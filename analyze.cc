@@ -95,7 +95,7 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
                                  InputTag const& assns_tag,
                                  TH2F& hist)
 {
-  auto const clusters_h = ev.getValidHandle<vector<Cluster>>(clusters_tag);
+  auto const & clusters_h = ev.getValidHandle<vector<Cluster>>(clusters_tag);
   FindMany<Hit> hits_for_cluster(clusters_h, ev, assns_tag);
 
   for (size_t i = 0, sz = clusters_h->size(); i != sz; ++i) {
@@ -108,28 +108,34 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
     for (auto phit : hits) {
       summed_integrals += phit->Integral();
     }
-//    std::cout << adc << ", " << summed_integrals << std::endl;
     hist.Fill(adc, summed_integrals);
   }
 }
-/*
+
+void
+analyze_cluster_hit_correlations_nofm(gallery::Event const& ev,
+                                      InputTag const& assns_tag,
+                                      TH2F& hist)
+{
   auto const & assns = *ev.getValidHandle<Assns<Cluster, Hit>>(assns_tag);
 
-  float adc = assns[0].first->SummedADC();
-  float summed_integrals = 0.; 
   size_t sz = assns.size(); 
   if (sz == 0) return;  
+  float adc = assns[0].first->SummedADC();
+  float summed_integrals = assns[0].second->Integral(); 
   for (size_t i = 1; i != sz; ++i) {
     auto const & cluster = assns[i].first;
-    auto const & hit = assns[i-1].second; 
-    summed_integrals += hit->Integral();
     if (assns[i-1].first != cluster){
-   //   std::cout << adc << ", " << summed_integrals << std::endl; 
+//      std::cout << adc << ", " << summed_integrals << std::endl;
       hist.Fill(adc, summed_integrals);
       adc = cluster->SummedADC();
       summed_integrals = 0.; 
     }
+    auto const & hit = assns[i].second; 
+    summed_integrals += hit->Integral();
   }
-  hist.Fill(adc, summed_integrals+assns[sz-1].second->Integral());
- // std::cout << adc << ", " << summed_integrals+assns[sz-1].second->Integral() << std::endl; 
-}*/
+  //for the last group of hits 
+  //summed_integrals += assns[sz-1].second->Integral();
+  hist.Fill(adc, summed_integrals);
+  //std::cout << adc << ", " << summed_integrals << std::endl;
+}

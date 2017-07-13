@@ -33,4 +33,8 @@ analyze_cluster_hit_correlations(gallery::Event const& ev,
                                  art::InputTag const& clusters_tag,
                                  art::InputTag const& assns_tag,
                                  TH2F& hist);
+void
+analyze_cluster_hit_correlations_nofm(gallery::Event const& ev,
+                                      art::InputTag const& assns_tag,
+                                      TH2F& hist);
 #endif
